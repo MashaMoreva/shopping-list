@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export interface ListItem {
   id: number;
   title: string;
@@ -5,7 +7,7 @@ export interface ListItem {
 }
 
 
-export interface ListStateAndActions{
+export interface ListStateAndActions {
   list: ListItem[];
   createItem: () => void;
   setItemTitle: (id: number, title: string) => void;
@@ -14,33 +16,53 @@ export interface ListStateAndActions{
 }
 
 export function useList(): ListStateAndActions {
-  // Список элементов
-  const list: ListItem[] = [];
 
-  /** Создать новый элемент. */
-  const createItem = () => { };
+  // Используем useState для хранения состояния списка
+  const [list, setList] = useState<ListItem[]>([]);
 
-  /**
-   * Установить заголовок элемента.
-   *
-   * @param id - ID элемента.
-   * @param title - Заголовок элемента.
-   */
-  const setItemTitle = (id: number, title: string) => { };
 
-  /**
-   * Переключить выполненность элемента.
-   *
-   * @param id - ID элемента.
-   */
-  const toggleItem = (id: number) => { };
+  // Генератор уникальных идентификаторов для новых элементов
+  const generateId = (): number => {
+    return Math.floor(Math.random() * 1111); 
+  };
 
-  /**
-   * Удалить элемент.
-   *
-   * @param id - ID элемента.
-   */
-  const deleteItem = (id: number) => { };
+  // Создание нового элемента
+  const createItem = () => {
+    const newItem: ListItem = {
+      id: generateId(),
+      title: '',
+      done: false,
+    };
+    setList([...list, newItem]);
+  };
+
+  // Установка заголовка элемента
+  const setItemTitle = (id: number, title: string) => {
+    const updatedList = list.map(item => {
+      if (item.id === id) {
+        return { ...item, title: title };
+      }
+      return item;
+    });
+    setList(updatedList);
+  };
+
+  // Переключение выполненности элемента
+  const toggleItem = (id: number) => {
+    const updatedList = list.map(item => {
+      if (item.id === id) {
+        return { ...item, done: !item.done };
+      }
+      return item;
+    });
+    setList(updatedList);
+  };
+
+  // Удаление элемента
+  const deleteItem = (id: number) => {
+    const updatedList = list.filter(item => item.id !== id);
+    setList(updatedList);
+  };
 
   return {
     list,
