@@ -1,39 +1,36 @@
 import React from 'react';
 import './Card.css';
+import { ListItem } from './useList';
 
 interface CardProps {
-    id: number;
-    title: string;
+    item: ListItem;
     onTitleChange: (id: number, value: string) => void;
-    done: boolean;
     onToggle: (id: number) => void;
     onDelete: (id: number) => void;
 }
 
 export const Card: React.FC<CardProps> = ({
-    id,
-    title,
+    item,
     onTitleChange,
-    done,
     onToggle,
     onDelete,
 }) => {
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onTitleChange(id, event.target.value);
+        onTitleChange(item.id, event.target.value);
     };
 
     const handleCheckboxChange = () => {
-        onToggle(id);
+        onToggle(item.id);
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        onToggle(id);
+        onToggle(item.id);
     };
 
     const handleTitleBlur = () => {
-        if (title === '') {
-            onDelete(id);
+        if (item.title === '') {
+            onDelete(item.id);
         }
     };
 
@@ -42,7 +39,7 @@ export const Card: React.FC<CardProps> = ({
             <input
                 className="card__done"
                 type="checkbox"
-                checked={done}
+                checked={item.done}
                 onChange={handleCheckboxChange}
                 tabIndex={-1}
             />
@@ -50,7 +47,7 @@ export const Card: React.FC<CardProps> = ({
             <input
                 className="card__title"
                 type="text"
-                value={title}
+                value={item.title}
                 onChange={handleTitleChange}
                 onBlur={handleTitleBlur}
             />
